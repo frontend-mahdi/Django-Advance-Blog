@@ -90,30 +90,20 @@ class PostList(ListCreateAPIView):
     serializer_class = PostSerializer
     queryset = Post.objects.all()
     
-class PostDetail(APIView):
+class PostDetail(GenericAPIView,mixins.RetrieveModelMixin,mixins.UpdateModelMixin,mixins.DestroyModelMixin):
     """get and update and delete single post"""
     permission_classes=[IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
-    
-    def get(self,request,id):
+    queryset = Post.objects.filter()
+
+    def get(self,request,*args,**kwargs):
         """get single post"""
-        post = get_object_or_404(Post, pk=id)
-        serializer = self.serializer_class(post)
-        return Response(serializer.data)
+        return self.retrieve(request,*args,**kwargs)
     
-    def put(self,request,id):
+    def put(self,request,*args,**kwargs):
         """update single post"""
-        post = get_object_or_404(Post, pk=id)
-        serializer = self.serializer_class(post, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+        return self.update(request,*args,**kwargs)
     
-    def delete(self,request,id):
+    def delete(self,request,*args,**kwargs):
         """delete single post"""
-        post = get_object_or_404(Post, pk=id)
-        post.delete()
-        return Response(
-            {"details": f"post with id={id} was deleted successfully!"},
-            status=status.HTTP_204_NO_CONTENT,
-        )
+        return self.destroy(request,*args,**kwargs)
