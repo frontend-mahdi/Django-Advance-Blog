@@ -3,6 +3,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework import viewsets
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from rest_framework.decorators import action
 from .serializers import PostSerializer, CategorySerializer
 from ...models import Post, Category
 
@@ -101,6 +102,10 @@ class PostModelViewSet (viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = PostSerializer
     queryset = Post.objects.all()
+
+    @action(methods=['get'],detail=False)
+    def get_ok(self,request):
+        return Response({'detail':'ok'})
 
 class CategoryModelViewSet (viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]

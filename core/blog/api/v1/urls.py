@@ -15,13 +15,13 @@ Including another URLconf
 """
 
 from django.urls import path
-from rest_framework.routers import DefaultRouter
+from rest_framework.routers import DefaultRouter,SimpleRouter
 
 from . import views
 
 app_name = "api-v1"
 
-router = DefaultRouter()
+router = SimpleRouter()
 router.register("post", viewset=views.PostModelViewSet, basename="post")
 router.register("category", viewset=views.CategoryModelViewSet, basename="category")
 
