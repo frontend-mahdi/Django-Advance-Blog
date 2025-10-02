@@ -15,12 +15,18 @@ Including another URLconf
 """
 
 from django.urls import path
+from rest_framework.routers import DefaultRouter
 
 from . import views
 
 app_name = "api-v1"
 
-urlpatterns = [
-    path("post/", views.PostViewSet.as_view({'get':'list'}), name="post-list"),
-    path("post/<int:pk>/", views.PostViewSet.as_view({'get':'retrive','delete':'destroy','put':'update'}), name="post-detail"),
-]
+router = DefaultRouter()
+router.register('post',viewset=views.PostViewSet,basename='post')
+
+urlpatterns = router.urls
+
+# urlpatterns = [
+#     path("post/", views.PostViewSet.as_view({'get':'list'}), name="post-list"),
+#     path("post/<int:pk>/", views.PostViewSet.as_view({'get':'retrive','delete':'destroy','put':'update'}), name="post-detail"),
+# ]

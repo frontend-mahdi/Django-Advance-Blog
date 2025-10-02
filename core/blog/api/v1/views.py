@@ -106,7 +106,7 @@ class PostViewSet (viewsets.ViewSet):
         serializer = self.serializer_class(self.queryset, many=True)
         return Response(serializer.data)
     
-    def retrive (self,request,pk=None):
+    def retrieve (self,request,pk=None):
         post_object = get_object_or_404(self.queryset,pk=pk)
         serializer = self.serializer_class(post_object)
         return Response(serializer.data)
