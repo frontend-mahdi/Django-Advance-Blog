@@ -3,8 +3,8 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework import viewsets
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from .serializers import PostSerializer
-from ...models import Post
+from .serializers import PostSerializer, CategorySerializer
+from ...models import Post, Category
 
 """
 @api_view(["GET", "POST"])
@@ -97,22 +97,12 @@ class PostDetail(RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.filter()
 '''
 
-class PostViewSet (viewsets.ViewSet):
+class PostModelViewSet (viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = PostSerializer
     queryset = Post.objects.all()
 
-    def list (self,request):
-        serializer = self.serializer_class(self.queryset, many=True)
-        return Response(serializer.data)
-    
-    def retrieve (self,request,pk=None):
-        post_object = get_object_or_404(self.queryset,pk=pk)
-        serializer = self.serializer_class(post_object)
-        return Response(serializer.data)
-
-    def update(self, request, pk=None):
-        pass
-
-    def destroy(self, request, pk=None):
-        pass
+class CategoryModelViewSet (viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()

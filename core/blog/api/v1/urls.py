@@ -22,7 +22,8 @@ from . import views
 app_name = "api-v1"
 
 router = DefaultRouter()
-router.register('post',viewset=views.PostViewSet,basename='post')
+router.register("post", viewset=views.PostModelViewSet, basename="post")
+router.register("category", viewset=views.CategoryModelViewSet, basename="category")
 
 urlpatterns = router.urls
 
