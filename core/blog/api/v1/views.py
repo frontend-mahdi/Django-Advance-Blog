@@ -1,7 +1,8 @@
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-
-
+from rest_framework import viewsets
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 from .serializers import PostSerializer
 from ...models import Post
 
@@ -78,7 +79,7 @@ class PostList(GenericAPIView,mixins.ListModelMixin,mixins.CreateModelMixin):
         return self.create(request,*args,**kwargs)
     
 '''
-
+'''
 
 class PostList(ListCreateAPIView):
     """getting  list of posts and creating new post"""
@@ -94,3 +95,24 @@ class PostDetail(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.filter()
+'''
+
+class PostViewSet (viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+
+    def list (self,request):
+        serializer = self.serializer_class(self.queryset, many=True)
+        return Response(serializer.data)
+    
+    def retrive (self,request,pk=None):
+        post_object = get_object_or_404(self.queryset,pk=pk)
+        serializer = self.serializer_class(post_object)
+        return Response(serializer.data)
+
+    def update(self, request, pk=None):
+        pass
+
+    def destroy(self, request, pk=None):
+        pass
