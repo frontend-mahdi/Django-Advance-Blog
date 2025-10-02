@@ -1,11 +1,6 @@
-from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
-from rest_framework.decorators import api_view,permission_classes
-from rest_framework.response import Response
-from rest_framework import status,mixins
-from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly
-from rest_framework.views import APIView
-from rest_framework.generics import GenericAPIView,ListCreateAPIView
 
 from .serializers import PostSerializer
 from ...models import Post
@@ -84,26 +79,18 @@ class PostList(GenericAPIView,mixins.ListModelMixin,mixins.CreateModelMixin):
     
 '''
 
+
 class PostList(ListCreateAPIView):
     """getting  list of posts and creating new post"""
-    permission_classes=[IsAuthenticated]
+
+    permission_classes = [IsAuthenticated]
     serializer_class = PostSerializer
     queryset = Post.objects.all()
-    
-class PostDetail(GenericAPIView,mixins.RetrieveModelMixin,mixins.UpdateModelMixin,mixins.DestroyModelMixin):
+
+
+class PostDetail(RetrieveUpdateDestroyAPIView):
     """get and update and delete single post"""
-    permission_classes=[IsAuthenticatedOrReadOnly]
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.filter()
-
-    def get(self,request,*args,**kwargs):
-        """get single post"""
-        return self.retrieve(request,*args,**kwargs)
-    
-    def put(self,request,*args,**kwargs):
-        """update single post"""
-        return self.update(request,*args,**kwargs)
-    
-    def delete(self,request,*args,**kwargs):
-        """delete single post"""
-        return self.destroy(request,*args,**kwargs)
