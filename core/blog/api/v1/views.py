@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status,mixins
 from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView,ListCreateAPIView
 
 from .serializers import PostSerializer
 from ...models import Post
@@ -67,6 +67,7 @@ class PostList(APIView):
         serializer.save()
         return Response(serializer.data)
 '''
+'''
 class PostList(GenericAPIView,mixins.ListModelMixin,mixins.CreateModelMixin):
     """getting  list of posts and creating new post"""
     permission_classes=[IsAuthenticated]
@@ -80,7 +81,15 @@ class PostList(GenericAPIView,mixins.ListModelMixin,mixins.CreateModelMixin):
     def post(self,request,*args,**kwargs):
         "create a new post"
         return self.create(request,*args,**kwargs)
+    
+'''
 
+class PostList(ListCreateAPIView):
+    """getting  list of posts and creating new post"""
+    permission_classes=[IsAuthenticated]
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+    
 class PostDetail(APIView):
     """get and update and delete single post"""
     permission_classes=[IsAuthenticatedOrReadOnly]
