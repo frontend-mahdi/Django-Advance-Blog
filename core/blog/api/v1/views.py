@@ -2,9 +2,10 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status,mixins
 from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 
 from .serializers import PostSerializer
 from ...models import Post
@@ -47,7 +48,7 @@ def postView(request, id):
             status=status.HTTP_204_NO_CONTENT,
         )
 """
-
+'''
 class PostList(APIView):
     """getting  list of posts and creating new post"""
     permission_classes=[IsAuthenticated]
@@ -65,6 +66,20 @@ class PostList(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+'''
+class PostList(GenericAPIView,mixins.ListModelMixin,mixins.CreateModelMixin):
+    """getting  list of posts and creating new post"""
+    permission_classes=[IsAuthenticated]
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+    
+    def get(self,request,*args,**kwargs):
+        """get list of posts"""
+        return self.list(request,*args,**kwargs)
+    
+    def post(self,request,*args,**kwargs):
+        "create a new post"
+        return self.create(request,*args,**kwargs)
 
 class PostDetail(APIView):
     """get and update and delete single post"""
