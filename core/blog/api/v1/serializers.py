@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from ...models import Post,Category
+from accounts.models import Profile, User
 
 # class PostSerializer(serializers.Serializer):
 #     id = serializers.IntegerField()
@@ -22,6 +23,8 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['id','author','title','image','category','content','status','snippet','relative_url','absolute_url','created_date','published_date']
         #3 read_only_fields = ['content']
+        read_only_fields = ['author']
+
     def get_abs_url(self,obj):
         request = self.context.get('request')
         return request.build_absolute_uri(obj.pk)
@@ -36,8 +39,12 @@ class PostSerializer(serializers.ModelSerializer):
             rep.pop('absolute_url',None)
         else:
             rep.pop('content',None)
-        rep['category']= CategorySerializer(instance.category).data
+        rep['category']= CategorySerializer(instance.category,context={'request':request}).data
         # rep.pop('snippet',None)
         return rep
     
+    def create(self, validated_data):
+        validated_data['author'] = User.objects.get(pk = self.context.get('request').user.id)  
+        # validated_data['author'] = Profile.objects.get(user__id = self.context.get('request').user.id)  TODO: relate author to Profile instead of User! 
+        return super().create(validated_data)
 
