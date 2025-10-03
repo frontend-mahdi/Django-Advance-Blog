@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from .serializers import PostSerializer, CategorySerializer
 from ...models import Post, Category
+from .permissions import IsOwnerOrReadOnly
 
 """
 @api_view(["GET", "POST"])
@@ -99,7 +100,7 @@ class PostDetail(RetrieveUpdateDestroyAPIView):
 '''
 
 class PostModelViewSet (viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsOwnerOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.all()
 
