@@ -8,6 +8,7 @@ from .serializers import PostSerializer, CategorySerializer
 from ...models import Post, Category
 from .permissions import IsOwnerOrReadOnly
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter,OrderingFilter
 
 """
 @api_view(["GET", "POST"])
@@ -104,8 +105,10 @@ class PostModelViewSet (viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,IsOwnerOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.all()
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend,SearchFilter,OrderingFilter]
     filterset_fields = ['category', 'author','status']
+    search_fields = ['=title']
+    ordering_fields = ['published_date', 'created_date']
 
     @action(methods=['get'],detail=False)
     def get_ok(self,request):
